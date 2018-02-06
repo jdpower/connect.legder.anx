@@ -1,0 +1,21 @@
+body {
+    width: 1024px;
+    height: 748px;
+    margin: auto;
+}
+
+.row {
+    margin: 20px;
+}
+
+.message {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+input[type='button'] {
+    width: 200px;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #ece7e7;
+}
