@@ -24,9 +24,13 @@ verifyPackage()
 const path = "44'/0'/0'/0"
 
 getBtcAddress(path)
-    .then(result => console.log(result))
+    .then(result => {
+
+        console.log(result)
+        document.getElementById("result").innerHTML = JSON.stringify(result)
+    })
     .catch(error => {
 
         console.error(error)
-        // document.getElementById("result").innerHTML = JSON.stringify(error)
+        document.getElementById("result").innerHTML = JSON.stringify(error)
     })
