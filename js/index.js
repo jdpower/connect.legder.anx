@@ -38,9 +38,11 @@ const getEthAddress = async (path) => {
 }
 
 
-function onGetBtcAddress() {
+function onGetBtcAddress(btcPath) {
 
-    getBtcAddress(btcWalletPath)
+    if (btcPath === "") btcPath = btcWalletPath
+
+    getBtcAddress(btcPath)
         .then(result => {
 
             console.log(result)
@@ -55,9 +57,11 @@ function onGetBtcAddress() {
 }
 
 
-function onGetEthAddress() {
+function onGetEthAddress(ethPath) {
 
-    getEthAddress(ethWalletPath)
+    if (ethPath === "") ethPath = ethWalletPath
+
+    getEthAddress(ethPath)
         .then(result => {
 
             console.log(result)
@@ -70,3 +74,36 @@ function onGetEthAddress() {
         })
 
 }
+
+
+function urldecode(str) {
+
+    return decodeURIComponent((str+'').replace(/\+/g, '%20'));
+}
+
+
+var getQueryString = function (field, url) {
+
+    const href = url ? url : urldecode(window.location.href)
+    const reg = new RegExp('[?&]' + field + '=([^&#]*)', 'i')
+    const string = reg.exec(href)
+    return string ? string[1] : null
+}
+
+
+function processRequest() {
+
+    var action = getQueryString("action")
+    var path = getQueryString("walletpath")
+
+    if (action === "getBtcAddress" && path) {
+
+        onGetBtcAddress(path)
+    } else if (action === "getEthAddress" && path) {
+
+        onGetEthAddress(path)
+    }
+}
+
+
+processRequest()
