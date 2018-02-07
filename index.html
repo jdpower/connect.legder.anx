@@ -12,14 +12,46 @@
         <script src="js/bundles/EthBundle.js"></script>
     </head>
     <body>
+        <div class="jumbotron">
+            <div class="col-sm-12">
+                <h1>ANX LedgerHQ Nano Signer</h1>
+            </div>
+        </div>
         
-        <div class="container-fluid message">
+        <div class="container">    
             <div class="row">
-                <div class="col-12">
+                <div class="col-sm-12">
+                    <pre id="message"></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">    
+            <div class="row">
+                <div class="col-sm-12">
                     <pre id="result"></pre>
                 </div>
             </div>
         </div>
+
+        <div class="container">
+            <div class="row mainrow">
+                <div class="col-sm-12">
+                    <input type="submit" onclick="onGetBtcAddress()" value="Get BTC Address">
+                </div>
+            </div>
+            <div class="row mainrow">
+                <div class="col-sm-12">
+                    <input type="submit" onclick="onGetEthAddress()" value="Get ETH Address">
+                </div>
+            </div>
+        </div>
+
+        <footer class="container-fluid text-center">
+            <div class="col-sm-12">
+                <p>ANX LedgerHQ Nano Signer</p>
+            </div>
+        </footer>
 
         <script src="js/index.js"></script>
 
