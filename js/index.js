@@ -58,10 +58,14 @@ function onGetBtcAddress(btcPath) {
             console.error(error)
             document.getElementById("result").innerHTML = JSON.stringify(error)
 
-            var event = document.createEvent("Event")
-            event.initEvent("errorBtcAddress")
-            _errorBtcAddressMessage = error
-            document.dispatchEvent(event)
+            var data = { type: "anx.ledger", text: error }
+            window.postMessage(data, "*")
+            
+            // var event = document.createEvent("Event")
+            // event.initEvent("errorBtcAddress")
+            // _errorBtcAddressMessage = error
+            // document.dispatchEvent(event)
+
             // chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
             //     chrome.tabs.sendMessage(tabs[0].id, error, function(response) {
 
