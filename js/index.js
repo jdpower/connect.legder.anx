@@ -48,35 +48,17 @@ function onGetBtcAddress(btcPath) {
             console.log(result)
             document.getElementById("result").innerHTML = JSON.stringify(result)
 
-            // chrome.runtime.sendMessage(result, function (response) {
-
-            //     console.log(response)
-            // })
+            sendMessageBackToClient("sendBtcAddress", { detail: result })
         })
         .catch(error => {
 
             console.error(error)
             document.getElementById("result").innerHTML = JSON.stringify(error)
 
-            var data = { type: "anx.ledger", text: error }
-            window.postMessage(data, "*")
-            
+            sendMessageBackToClient("errorBtcAddress", { detail: error })
             // var event = document.createEvent("Event")
             // event.initEvent("errorBtcAddress")
-            // _errorBtcAddressMessage = error
             // document.dispatchEvent(event)
-
-            // chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-            //     chrome.tabs.sendMessage(tabs[0].id, error, function(response) {
-
-            //         console.log(response) 
-            //     })
-            // })
-
-            // chrome.runtime.sendMessage(error, function (response) {
-
-            //     console.log(response)
-            // })
         })
 
 }
@@ -91,13 +73,24 @@ function onGetEthAddress(ethPath) {
 
             console.log(result)
             document.getElementById("result").innerHTML = JSON.stringify(result)
+
+            sendMessageBackToClient("sendEthAddress", { detail: result })
         })
         .catch(error => {
 
             console.error(error)
             document.getElementById("result").innerHTML = JSON.stringify(error)
+
+            sendMessageBackToClient("errorEthAddress", { detail: error })
         })
 
+}
+
+
+function sendMessageBackToClient(action, message) {
+
+    var eventData = new CustomEvent(action, message)
+    document.dispatchEvent(eventData)
 }
 
 
