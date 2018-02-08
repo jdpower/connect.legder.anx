@@ -47,11 +47,21 @@ function onGetBtcAddress(btcPath) {
 
             console.log(result)
             document.getElementById("result").innerHTML = JSON.stringify(result)
+
+            chrome.runtime.sendMessage(result, function (response) {
+
+                console.log(response)
+            })
         })
         .catch(error => {
 
             console.error(error)
             document.getElementById("result").innerHTML = JSON.stringify(error)
+
+            chrome.runtime.sendMessage(error, function (response) {
+
+                console.log(response)
+            })
         })
 
 }
