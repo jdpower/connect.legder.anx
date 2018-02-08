@@ -48,20 +48,27 @@ function onGetBtcAddress(btcPath) {
             console.log(result)
             document.getElementById("result").innerHTML = JSON.stringify(result)
 
-            chrome.runtime.sendMessage(result, function (response) {
+            // chrome.runtime.sendMessage(result, function (response) {
 
-                console.log(response)
-            })
+            //     console.log(response)
+            // })
         })
         .catch(error => {
 
             console.error(error)
             document.getElementById("result").innerHTML = JSON.stringify(error)
 
-            chrome.runtime.sendMessage(error, function (response) {
+            chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, error, function(response) {
 
-                console.log(response)
+                    console.log(response) 
+                })
             })
+
+            // chrome.runtime.sendMessage(error, function (response) {
+
+            //     console.log(response)
+            // })
         })
 
 }
