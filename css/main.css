@@ -16,6 +16,7 @@ header {
 
 input[type=submit] {
     width: 200px;
+    height: 40px;
     border-radius: 8px;
     background-color: #0071ce;
     color: #ffffff;
