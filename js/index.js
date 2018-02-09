@@ -46,14 +46,14 @@ function onGetBtcAddress(btcPath) {
         .then(result => {
 
             console.log(result)
-            document.getElementById("result").innerHTML = JSON.stringify(result)
+            document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
 
             sendMessageBackToClient("sendBtcAddress", { detail: result })
         })
         .catch(error => {
 
             console.error(error)
-            document.getElementById("result").innerHTML = JSON.stringify(error)
+            document.getElementById("result").innerHTML = JSON.stringify(error, undefined, 3)
 
             sendMessageBackToClient("errorBtcAddress", { detail: error })
             // var event = document.createEvent("Event")
