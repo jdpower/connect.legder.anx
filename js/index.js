@@ -7,7 +7,7 @@ function verifyPackage() {
 
 verifyPackage()
 
-
+const tbtcWalletPath = "44'/1'/0'/0/0'"
 const btcWalletPath = "44'/0'/0'/0"
 const ethWalletPath = "44'/60'/0'/0'/0"
 
@@ -35,6 +35,32 @@ const getEthAddress = async (path) => {
     const eth = new AppEth.default(transport)
     const result = await eth.getAddress(path, true, true)
     return result.address
+}
+
+
+function onGettBtcAddress(tbtcPath) {
+
+    if (tbtcPath === "") btcPath = btcWalletPath
+
+    getBtcAddress(tbtcPath)
+        .then(result => {
+
+            console.log(result)
+            document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
+
+            sendMessageBackToClient("sendtBtcAddress", { detail: result })
+        })
+        .catch(error => {
+
+            console.error(error)
+            document.getElementById("result").innerHTML = JSON.stringify(error, undefined, 3)
+
+            sendMessageBackToClient("errortBtcAddress", { detail: error })
+            // var event = document.createEvent("Event")
+            // event.initEvent("errorBtcAddress")
+            // document.dispatchEvent(event)
+        })
+
 }
 
 
@@ -120,6 +146,9 @@ function processRequest() {
     } else if (action === "getEthAddress" && path) {
 
         onGetEthAddress(path)
+    } else if (action === "gettBtcAddress" && path) {
+
+        onGettBtcAddress(path)
     }
 }
 
