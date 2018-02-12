@@ -24,7 +24,7 @@ const getBtcAddress = async (path) => {
     return result.bitcoinAddress
 }
 
-
+// ETH methods from ledger HQ SDK
 const getEthAddress = async (path) => {
 
     const devices = await Transport.default.list()
@@ -33,8 +33,27 @@ const getEthAddress = async (path) => {
 
     const transport = await Transport.default.open(devices[0])
     const eth = new AppEth.default(transport)
-    const result = await eth.getAddress(path, true, true)
-    return result.address
+    // const result = await eth.getAddress(path, true, true)
+    // return result.address
+
+    eth.getAddress(path, true, true)
+        .then(addr => {
+            return addr.address
+        })
+
+}
+
+
+const signEthTransaction = async (path, rawTxHex) => {
+
+    const devices = await Transport.default.list()
+
+    if (devices.length === 0) throw "no devices connected"
+
+    const transport = await Transport.default.open(devices[0])
+    const eth = new AppEth.default(transport)
+    const result = await eth.signTransaction(path, rawTxHex)
+    return result
 }
 
 
