@@ -33,14 +33,8 @@ const getEthAddress = async (path) => {
 
     const transport = await Transport.default.open(devices[0])
     const eth = new AppEth.default(transport)
-    // const result = await eth.getAddress(path, true, true)
-    // return result.address
-
-    eth.getAddress(path, true, true)
-        .then(addr => {
-            return addr.address
-        })
-
+    const result = await eth.getAddress(path, true, true)
+    return result.address
 }
 
 
@@ -53,6 +47,19 @@ const signEthTransaction = async (path, rawTxHex) => {
     const transport = await Transport.default.open(devices[0])
     const eth = new AppEth.default(transport)
     const result = await eth.signTransaction(path, rawTxHex)
+    return result
+}
+
+
+const getEthAppConfiguration = async () => {
+
+    const devices = await Transport.default.list()
+
+    if (devices.length === 0) throw "no devices connected"
+
+    const transport = await Transport.default.open(devices[0])
+    const eth = new AppEth.default(transport)
+    const result = await eth.getAppConfiguration()
     return result
 }
 
@@ -132,6 +139,48 @@ function onGetEthAddress(ethPath) {
 }
 
 
+function onEthSignTransaction(path, rawTxHex) {
+
+    if (ethPath === "") ethPath = ethWalletPath
+
+    signEthTransaction(path, rawTxHex)
+        .then(result => {
+            
+            console.log(result)
+            document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
+
+            sendMessageBackToClient("sendEthSignTx", { detail: result })
+        })
+        .catch(error => {
+
+            console.log(error)
+            document.getElementById("result").innerHTML = JSON.stringify(error, undefined, 3)
+
+            sendMessageBackToClient("errorEthSignTx", { detail: error })
+        })
+}
+
+
+function onEthAppConfiguration() {
+
+    getEthAppConfiguration()
+        .then(result => {
+            
+            console.log(result)
+            document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
+
+            sendMessageBackToClient("sendEthAppConfig", { detail: result })
+        })
+        .catch(error => {
+
+            console.log(error)
+            document.getElementById("result").innerHTML = JSON.stringify(error, undefined, 3)
+
+            sendMessageBackToClient("errorEthAppConfig", { detail: error })
+        })
+}
+
+
 function sendMessageBackToClient(action, message) {
 
     var eventData = new CustomEvent(action, message)
@@ -158,7 +207,8 @@ function processRequest() {
 
     var action = getQueryString("action")
     var path = getQueryString("walletpath")
-
+    var rawTx = getQueryString("rawtx")
+    
     if (action === "getBtcAddress" && path) {
 
         onGetBtcAddress(path)
@@ -168,6 +218,12 @@ function processRequest() {
     } else if (action === "gettBtcAddress" && path) {
 
         onGettBtcAddress(path)
+    } else if (action === "signEthSignTx" && path) {
+
+        onEthSignTransaction(path, rawTx)
+    } else if (action === "getEthAppConfig") {
+
+        onEthAppConfiguration()
     }
 }
 
