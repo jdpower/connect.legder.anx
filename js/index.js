@@ -143,7 +143,7 @@ function onEthSignTransaction(ethPath, rawTxHex) {
 
     if (ethPath === "") ethPath = ethWalletPath
 
-    signEthTransaction(path, rawTxHex)
+    signEthTransaction(ethPath, rawTxHex)
         .then(result => {
             
             console.log(result)
