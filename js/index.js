@@ -139,7 +139,7 @@ function onGetEthAddress(ethPath) {
 }
 
 
-function onEthSignTransaction(path, rawTxHex) {
+function onEthSignTransaction(ethPath, rawTxHex) {
 
     if (ethPath === "") ethPath = ethWalletPath
 
