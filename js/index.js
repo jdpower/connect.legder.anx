@@ -49,17 +49,34 @@ const signEthTransaction = async (path, txParams) => {
     
     console.log(txParams)
 
-    const raw = []
-    raw.push(txParams.nonce)
-    raw.push(txParams.gasPrice)
-    raw.push(txParams.gasLimit)
-    raw.push(txParams.data)
+    const txParams = {
+        nonce: '0x00',
+        gasPrice: '0x09184e72a000', 
+        gasLimit: '0x2710',
+        to: '0x0000000000000000000000000000000000000000', 
+        value: '0x00', 
+        data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
+        // EIP 155 chainId - mainnet: 1, ropsten: 3
+        chainId: 3
+    }
 
-    const encoded = ethereumjs.RLP.encode(raw)
-    console.log(encoded)
+    // const raw = []
+    // raw.push(txParams.nonce)
+    // raw.push(txParams.gasPrice)
+    // raw.push(txParams.gasLimit)
+    // raw.push(txParams.to)
+    // raw.push(txParams.value)
+    // raw.push(txParams.data)
+    // raw.push(txParams.chainId)
 
-    // var tx = new ethereumjs.Tx(txParams)
-    // console.log(tx)
+    // const encoded = ethereumjs.RLP.encode(raw)
+    // console.log(encoded)
+
+    var tx = new ethereumjs.Tx(txParams)
+    console.log(tx)
+
+    const serializedTx = tx.serialize()
+    console.log(serializedTx)
     
     const result = await eth.signTransaction(path, encoded)
     return result
