@@ -46,8 +46,13 @@ const signEthTransaction = async (path, rawTxHex) => {
 
     const transport = await Transport.default.open(devices[0])
     const eth = new AppEth.default(transport)
-    console.log(rawTxHex)
-    const result = await eth.signTransaction(path, rawTxHex)
+    
+    const txParams = JSON.parse(rawTxHex)
+    console.log(txParams)
+    var tx = new ethereumjs.Tx(txParams)
+    console.log(tx)
+    
+    const result = await eth.signTransaction(path, tx.raw)
     return result
 }
 
