@@ -49,10 +49,20 @@ const signEthTransaction = async (path, rawTxHex) => {
     
     const txParams = JSON.parse(rawTxHex)
     console.log(txParams)
-    var tx = new ethereumjs.Tx(txParams)
-    console.log(tx)
+
+    const raw = []
+    raw.push(txParams.nonce)
+    raw.push(txParams.gasPrice)
+    raw.push(txParams.gasLimit)
+    raw.push(txParams.data)
+
+    const encoded = ethereumjs.RLP.encode(raw)
+    console.log(encoded)
+
+    // var tx = new ethereumjs.Tx(txParams)
+    // console.log(tx)
     
-    const result = await eth.signTransaction(path, tx.raw)
+    const result = await eth.signTransaction(path, encoded)
     return result
 }
 
