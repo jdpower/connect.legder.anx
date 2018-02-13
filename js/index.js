@@ -38,7 +38,7 @@ const getEthAddress = async (path) => {
 }
 
 
-const signEthTransaction = async (path, rawTxHex) => {
+const signEthTransaction = async (path, txParams) => {
 
     const devices = await Transport.default.list()
 
@@ -47,7 +47,6 @@ const signEthTransaction = async (path, rawTxHex) => {
     const transport = await Transport.default.open(devices[0])
     const eth = new AppEth.default(transport)
     
-    const txParams = JSON.parse(rawTxHex)
     console.log(txParams)
 
     const raw = []
@@ -158,15 +157,16 @@ function onGetEthAddress(ethPath) {
 function onEthSignTransaction(ethPath, rawTxHex) {
 
     if (ethPath === "") ethPath = ethWalletPath
+    const txParams = JSON.parse(rawTxHex)
 
-    signEthTransaction(ethPath, rawTxHex)
+    signEthTransaction(ethPath, txParams)
         .then(result => {
             
             console.log(result)
             document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
 
             const data = {
-                rawTxHex: rawTxHex,
+                tx: txParams,
                 result: result
             }
 
