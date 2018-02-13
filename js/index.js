@@ -46,6 +46,9 @@ const signEthTransaction = async (path, rawTxHex) => {
 
     const transport = await Transport.default.open(devices[0])
     const eth = new AppEth.default(transport)
+    console.log(rawTxHex)
+    rawTxHex = toHex(rawTxHex)
+    console.log(rawTxHex)
     const result = await eth.signTransaction(path, rawTxHex)
     return result
 }
@@ -185,6 +188,16 @@ function sendMessageBackToClient(action, message) {
 
     var eventData = new CustomEvent(action, message)
     document.dispatchEvent(eventData)
+}
+
+
+function toHex(str) {
+
+	var hex = ""
+	for(var i = 0; i < str.length; i++) {
+		hex += "" + str.charCodeAt(i).toString(16)
+	}
+	return hex
 }
 
 
