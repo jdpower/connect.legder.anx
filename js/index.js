@@ -165,7 +165,12 @@ function onEthSignTransaction(ethPath, rawTxHex) {
             console.log(result)
             document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
 
-            sendMessageBackToClient("sendEthSignTx", { detail: result })
+            const data = {
+                rawTxHex: rawTxHex,
+                result: result
+            }
+
+            sendMessageBackToClient("sendEthSignTx", { detail: data })
         })
         .catch(error => {
 
