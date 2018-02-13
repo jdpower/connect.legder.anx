@@ -49,7 +49,7 @@ const signEthTransaction = async (path, txParams) => {
     
     console.log(txParams)
 
-    const txParams = {
+    txParams = {
         nonce: '0x00',
         gasPrice: '0x09184e72a000', 
         gasLimit: '0x2710',
@@ -57,7 +57,7 @@ const signEthTransaction = async (path, txParams) => {
         value: '0x00', 
         data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
         // EIP 155 chainId - mainnet: 1, ropsten: 3
-        chainId: 3
+        chainId: 12
     }
 
     // const raw = []
@@ -72,10 +72,10 @@ const signEthTransaction = async (path, txParams) => {
     // const encoded = ethereumjs.RLP.encode(raw)
     // console.log(encoded)
 
-    var tx = new ethereumjs.Tx(txParams)
-    console.log(tx)
+    // var tx = new ethereumjs.Tx(txParams)
+    // console.log(tx)
 
-    const serializedTx = tx.serialize()
+    const serializedTx = serializeTx(txParams)
     console.log(serializedTx)
     
     const result = await eth.signTransaction(path, encoded)
@@ -234,6 +234,16 @@ function sendMessageBackToClient(action, message) {
 // 	}
 // 	return hex
 // }
+
+
+function serializeTx(txParams) {
+
+    const _chainIdHex = ("0" + txParams.chainId.toString(16)).slice(-2)
+    
+    let tx = new ethereumjs.Tx(txParams)
+    const serializedTx = tx.serialize()
+    return serializedTx.toString("hex").replace(/1c8080$/, _chainIdHex + "8080")
+}
 
 
 function urldecode(str) {
