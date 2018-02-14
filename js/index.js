@@ -226,11 +226,15 @@ function sendMessageBackToClient(action, message) {
 
 function serializeTx(txParams) {
 
-    const _chainIdHex = ("0" + txParams.chainId.toString(16)).slice(-2)
-    
-    let tx = new ethereumjs.Tx(txParams)
+    let tx = new ethereumjs.Tx(Object.assign({v: txParams.chainId}, txParams))
     const serializedTx = tx.serialize()
-    return serializedTx.toString("hex").replace(/1c8080$/, _chainIdHex + "8080")
+    return serializedTx.toString("hex")
+
+    // const _chainIdHex = ("0" + txParams.chainId.toString(16)).slice(-2)
+    
+    // let tx = new ethereumjs.Tx(txParams)
+    // const serializedTx = tx.serialize()
+    // return serializedTx.toString("hex").replace(/1c8080$/, _chainIdHex + "8080")
 }
 
 
