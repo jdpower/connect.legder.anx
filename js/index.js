@@ -38,7 +38,7 @@ const getEthAddress = async (path) => {
 }
 
 
-const signEthTransaction = async (path, serializedTx) => {
+const signEthTransaction = async (path, txParams) => {
 
     const devices = await Transport.default.list()
 
@@ -47,7 +47,7 @@ const signEthTransaction = async (path, serializedTx) => {
     const transport = await Transport.default.open(devices[0])
     const eth = new AppEth.default(transport)
     
-    console.log(serializedTx)
+    console.log(txParams)
 
     // Sample tx params for Ledger HQ signing
     // txParams = {
@@ -61,10 +61,10 @@ const signEthTransaction = async (path, serializedTx) => {
     //     chainId: 12
     // }
 
-    // const serializedTx = serializeTx(serializedTx)
+    const serializedTx = serializeTx(txParams)
     console.log(serializedTx)
     
-    const result = await eth.signTransaction(path, serializedTx)
+    const result = await eth.signTransaction(path, txParams)
     return result
 }
 
@@ -157,21 +157,21 @@ function onGetEthAddress(ethPath) {
 }
 
 
-function onEthSignTransaction(ethPath, serializedTx) {
+function onEthSignTransaction(ethPath, txParams) {
 
     if (ethPath === "") ethPath = ethWalletPath
-    // const txParams = JSON.parse(serializedTx)
+    const _txParams = JSON.parse(txParams)
 
     
     // signEthTransaction(ethPath, txParams)
-    signEthTransaction(ethPath, serializedTx)
+    signEthTransaction(ethPath, _txParams)
         .then(result => {
             
             console.log(result)
             document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
 
             const data = {
-                tx: serializedTx,
+                tx: _txParams,
                 result: result
             }
 
@@ -253,7 +253,7 @@ function processRequest() {
 
     var action = getQueryString("action")
     var path = getQueryString("walletpath")
-    var serializedTx = getQueryString("serializedTx")
+    var txParams = getQueryString("txParams")
     
     if (action === "getBtcAddress" && path) {
 
@@ -266,7 +266,7 @@ function processRequest() {
         onGettBtcAddress(path)
     } else if (action === "signEthSignTx" && path) {
 
-        onEthSignTransaction(path, serializedTx)
+        onEthSignTransaction(path, txParams)
     } else if (action === "getEthAppConfig") {
 
         onEthAppConfiguration()
