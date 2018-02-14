@@ -64,7 +64,7 @@ const signEthTransaction = async (path, txParams) => {
     const serializedTx = serializeTx(txParams)
     console.log(serializedTx)
     
-    const result = await eth.signTransaction(path, txParams)
+    const result = await eth.signTransaction(path, serializedTx)
     return result
 }
 
