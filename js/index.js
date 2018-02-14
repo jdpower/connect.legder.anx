@@ -38,7 +38,7 @@ const getEthAddress = async (path) => {
 }
 
 
-const signEthTransaction = async (path, txParams) => {
+const signEthTransaction = async (path, serializedTx) => {
 
     const devices = await Transport.default.list()
 
@@ -47,35 +47,21 @@ const signEthTransaction = async (path, txParams) => {
     const transport = await Transport.default.open(devices[0])
     const eth = new AppEth.default(transport)
     
-    console.log(txParams)
+    console.log(serializedTx)
 
-    txParams = {
-        nonce: '0x00',
-        gasPrice: '0x09184e72a000', 
-        gasLimit: '0x2710',
-        to: '0x0000000000000000000000000000000000000000', 
-        value: '0x00', 
-        data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
-        // EIP 155 chainId - mainnet: 1, ropsten: 3
-        chainId: 12
-    }
+    // Sample tx params for Ledger HQ signing
+    // txParams = {
+    //     nonce: '0x00',
+    //     gasPrice: '0x09184e72a000', 
+    //     gasLimit: '0x2710',
+    //     to: '0x0000000000000000000000000000000000000000', 
+    //     value: '0x00', 
+    //     data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
+    //     // EIP 155 chainId - mainnet: 1, ropsten: 3
+    //     chainId: 12
+    // }
 
-    // const raw = []
-    // raw.push(txParams.nonce)
-    // raw.push(txParams.gasPrice)
-    // raw.push(txParams.gasLimit)
-    // raw.push(txParams.to)
-    // raw.push(txParams.value)
-    // raw.push(txParams.data)
-    // raw.push(txParams.chainId)
-
-    // const encoded = ethereumjs.RLP.encode(raw)
-    // console.log(encoded)
-
-    // var tx = new ethereumjs.Tx(txParams)
-    // console.log(tx)
-
-    const serializedTx = serializeTx(txParams)
+    // const serializedTx = serializeTx(serializedTx)
     console.log(serializedTx)
     
     const result = await eth.signTransaction(path, serializedTx)
@@ -171,12 +157,14 @@ function onGetEthAddress(ethPath) {
 }
 
 
-function onEthSignTransaction(ethPath, rawTxHex) {
+function onEthSignTransaction(ethPath, serializedTx) {
 
     if (ethPath === "") ethPath = ethWalletPath
-    const txParams = JSON.parse(rawTxHex)
+    // const txParams = JSON.parse(serializedTx)
 
-    signEthTransaction(ethPath, txParams)
+    
+    // signEthTransaction(ethPath, txParams)
+    signEthTransaction(ethPath, serializedTx)
         .then(result => {
             
             console.log(result)
@@ -265,7 +253,7 @@ function processRequest() {
 
     var action = getQueryString("action")
     var path = getQueryString("walletpath")
-    var rawTx = getQueryString("rawtx")
+    var serializedTx = getQueryString("serializedTx")
     
     if (action === "getBtcAddress" && path) {
 
@@ -278,7 +266,7 @@ function processRequest() {
         onGettBtcAddress(path)
     } else if (action === "signEthSignTx" && path) {
 
-        onEthSignTransaction(path, rawTx)
+        onEthSignTransaction(path, serializedTx)
     } else if (action === "getEthAppConfig") {
 
         onEthAppConfiguration()
