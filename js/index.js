@@ -171,7 +171,7 @@ function onEthSignTransaction(ethPath, serializedTx) {
             document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
 
             const data = {
-                tx: txParams,
+                tx: serializedTx,
                 result: result
             }
 
