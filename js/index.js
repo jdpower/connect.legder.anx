@@ -12,13 +12,24 @@ const btcWalletPath = "44'/0'/0'/0"
 const ethWalletPath = "44'/60'/0'/0'/0"
 
 
-const getBtcAddress = async (path) => {
+const getDevice = async (path) => {
 
     const devices = await Transport.default.list()
 
     if (devices.length === 0) throw "no device connected"
 
-    const transport = await Transport.default.open(devices[0])
+    return await Transport.default.open(devices[0])
+}
+
+
+const getBtcAddress = async (path) => {
+
+    // const devices = await Transport.default.list()
+
+    // if (devices.length === 0) throw "no device connected"
+
+    // const transport = await Transport.default.open(devices[0])
+    const transport = getDevice(path)
     const btc = new AppBtc.default(transport)
     const result = await btc.getWalletPublicKey(path)
     return result.bitcoinAddress
@@ -46,21 +57,6 @@ const signEthTransaction = async (path, txParams) => {
 
     const transport = await Transport.default.open(devices[0])
     const eth = new AppEth.default(transport)
-    
-    console.log(txParams)
-
-    // Sample tx params for Ledger HQ signing
-    // txParams = {
-    //     nonce: '0x00',
-    //     gasPrice: '0x09184e72a000', 
-    //     gasLimit: '0x2710',
-    //     to: '0x0000000000000000000000000000000000000000', 
-    //     value: '0x00', 
-    //     data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
-    //     // EIP 155 chainId - mainnet: 1, ropsten: 3
-    //     chainId: 12
-    // }
-
     const serializedTx = serializeTx(txParams)
     console.log(serializedTx)
     
@@ -214,16 +210,6 @@ function sendMessageBackToClient(action, message) {
 }
 
 
-// function toHex(str) {
-
-// 	var hex = ""
-// 	for(var i = 0; i < str.length; i++) {
-// 		hex += "" + str.charCodeAt(i).toString(16)
-// 	}
-// 	return hex
-// }
-
-
 function serializeTx(txParams) {
 
     let tx = new ethereumjs.Tx(Object.assign({v: txParams.chainId}, txParams))
@@ -253,7 +239,7 @@ var getQueryString = function (field, url) {
 }
 
 
-function processRequest() {
+function processQueryRequest() {
 
     var action = getQueryString("action")
     var path = getQueryString("walletpath")
@@ -278,4 +264,4 @@ function processRequest() {
 }
 
 
-processRequest()
+processQueryRequest()
