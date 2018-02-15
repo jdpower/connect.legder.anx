@@ -29,7 +29,7 @@ const getBtcAddress = async (path) => {
     // if (devices.length === 0) throw "no device connected"
 
     // const transport = await Transport.default.open(devices[0])
-    const transport = getDevice(path)
+    const transport = await getDevice(path)
     const btc = new AppBtc.default(transport)
     const result = await btc.getWalletPublicKey(path)
     return result.bitcoinAddress
