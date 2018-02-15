@@ -7,9 +7,10 @@ function verifyPackage() {
 
 verifyPackage()
 
-const tbtcWalletPath = "44'/1'/0'/0/0'"
-const btcWalletPath = "44'/0'/0'/0"
-const ethWalletPath = "44'/60'/0'/0'/0"
+// reference wallet paths
+// tbtcWalletPath = "44'/1'/0'/0/0'"
+// btcWalletPath = "44'/0'/0'/0"
+// ethWalletPath = "44'/60'/0'/0'/0"
 
 
 const getDevice = async (path) => {
@@ -24,25 +25,16 @@ const getDevice = async (path) => {
 
 const getBtcAddress = async (path) => {
 
-    // const devices = await Transport.default.list()
-
-    // if (devices.length === 0) throw "no device connected"
-
-    // const transport = await Transport.default.open(devices[0])
     const transport = await getDevice(path)
     const btc = new AppBtc.default(transport)
     const result = await btc.getWalletPublicKey(path)
     return result.bitcoinAddress
 }
 
-// ETH methods from ledger HQ SDK
+
 const getEthAddress = async (path) => {
 
-    const devices = await Transport.default.list()
-
-    if (devices.length === 0) throw "no devices connected"
-
-    const transport = await Transport.default.open(devices[0])
+    const transport = await getDevice(path)
     const eth = new AppEth.default(transport)
     const result = await eth.getAddress(path, true, true)
     return result.address
@@ -51,11 +43,7 @@ const getEthAddress = async (path) => {
 
 const signEthTransaction = async (path, txParams) => {
 
-    const devices = await Transport.default.list()
-
-    if (devices.length === 0) throw "no devices connected"
-
-    const transport = await Transport.default.open(devices[0])
+    const transport = await getDevice(path)
     const eth = new AppEth.default(transport)
     const serializedTx = serializeTx(txParams)
     console.log(serializedTx)
@@ -67,11 +55,7 @@ const signEthTransaction = async (path, txParams) => {
 
 const getEthAppConfiguration = async () => {
 
-    const devices = await Transport.default.list()
-
-    if (devices.length === 0) throw "no devices connected"
-
-    const transport = await Transport.default.open(devices[0])
+    const transport = await getDevice(path)
     const eth = new AppEth.default(transport)
     const result = await eth.getAppConfiguration()
     return result
@@ -80,25 +64,20 @@ const getEthAppConfiguration = async () => {
 
 function onGettBtcAddress(tbtcPath) {
 
-    if (tbtcPath === "") btcPath = btcWalletPath
+    if (tbtcPath === "") throw "no wallet path"
 
     getBtcAddress(tbtcPath)
         .then(result => {
 
             console.log(result)
-            document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
-
+            displayResult(result)
             sendMessageBackToClient("sendtBtcAddress", { detail: result })
         })
         .catch(error => {
 
             console.error(error)
-            document.getElementById("result").innerHTML = JSON.stringify(error, undefined, 3)
-
+            displayResult(error)
             sendMessageBackToClient("errortBtcAddress", { detail: error })
-            // var event = document.createEvent("Event")
-            // event.initEvent("errorBtcAddress")
-            // document.dispatchEvent(event)
         })
 
 }
@@ -106,25 +85,20 @@ function onGettBtcAddress(tbtcPath) {
 
 function onGetBtcAddress(btcPath) {
 
-    if (btcPath === "") btcPath = btcWalletPath
+    if (btcPath === "") throw "no wallet path"
 
     getBtcAddress(btcPath)
         .then(result => {
 
             console.log(result)
-            document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
-
+            displayResult(result)
             sendMessageBackToClient("sendBtcAddress", { detail: result })
         })
         .catch(error => {
 
             console.error(error)
-            document.getElementById("result").innerHTML = JSON.stringify(error, undefined, 3)
-
+            displayResult(error)
             sendMessageBackToClient("errorBtcAddress", { detail: error })
-            // var event = document.createEvent("Event")
-            // event.initEvent("errorBtcAddress")
-            // document.dispatchEvent(event)
         })
 
 }
@@ -132,21 +106,19 @@ function onGetBtcAddress(btcPath) {
 
 function onGetEthAddress(ethPath) {
 
-    if (ethPath === "") ethPath = ethWalletPath
+    if (ethPath === "") throw "no wallet path"
 
     getEthAddress(ethPath)
         .then(result => {
 
             console.log(result)
-            document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
-
+            displayResult(result)
             sendMessageBackToClient("sendEthAddress", { detail: result })
         })
         .catch(error => {
 
             console.error(error)
-            document.getElementById("result").innerHTML = JSON.stringify(error, undefined, 3)
-
+            displayResult(error)
             sendMessageBackToClient("errorEthAddress", { detail: error })
         })
 
@@ -155,17 +127,14 @@ function onGetEthAddress(ethPath) {
 
 function onEthSignTransaction(ethPath, txParams) {
 
-    if (ethPath === "") ethPath = ethWalletPath
+    if (ethPath === "") throw "no wallet path"
     const _txParams = JSON.parse(txParams)
 
-    
-    // signEthTransaction(ethPath, txParams)
     signEthTransaction(ethPath, _txParams)
         .then(result => {
             
             console.log(result)
-            document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
-
+            displayResult(result)
             const data = {
                 tx: _txParams,
                 result: result
@@ -176,8 +145,7 @@ function onEthSignTransaction(ethPath, txParams) {
         .catch(error => {
 
             console.log(error)
-            document.getElementById("result").innerHTML = JSON.stringify(error, undefined, 3)
-
+            displayResult(error)
             sendMessageBackToClient("errorEthSignTx", { detail: error })
         })
 }
@@ -189,17 +157,21 @@ function onEthAppConfiguration() {
         .then(result => {
             
             console.log(result)
-            document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 3)
-
+            displayResult(result)
             sendMessageBackToClient("sendEthAppConfig", { detail: result })
         })
         .catch(error => {
 
             console.log(error)
-            document.getElementById("result").innerHTML = JSON.stringify(error, undefined, 3)
-
+            displayResult(error)
             sendMessageBackToClient("errorEthAppConfig", { detail: error })
         })
+}
+
+
+function displayResult(result) {
+
+    document.getElementById("result").innerHTML = JSON.stringify(result, undefined, 4)
 }
 
 
