@@ -71,13 +71,13 @@ function onGettBtcAddress(tbtcPath) {
 
             console.log(result)
             displayResult(result)
-            sendMessageBackToClient("sendtBtcAddress", { detail: result })
+            sendMessageToExtension("sendtBtcAddress", { detail: result })
         })
         .catch(error => {
 
             console.error(error)
             displayResult(error)
-            sendMessageBackToClient("errortBtcAddress", { detail: error })
+            sendMessageToExtension("errortBtcAddress", { detail: error })
         })
 
 }
@@ -92,13 +92,13 @@ function onGetBtcAddress(btcPath) {
 
             console.log(result)
             displayResult(result)
-            sendMessageBackToClient("sendBtcAddress", { detail: result })
+            sendMessageToExtension("sendBtcAddress", { detail: result })
         })
         .catch(error => {
 
             console.error(error)
             displayResult(error)
-            sendMessageBackToClient("errorBtcAddress", { detail: error })
+            sendMessageToExtension("errorBtcAddress", { detail: error })
         })
 
 }
@@ -113,13 +113,13 @@ function onGetEthAddress(ethPath) {
 
             console.log(result)
             displayResult(result)
-            sendMessageBackToClient("sendEthAddress", { detail: result })
+            sendMessageToExtension("sendEthAddress", { detail: result })
         })
         .catch(error => {
 
             console.error(error)
             displayResult(error)
-            sendMessageBackToClient("errorEthAddress", { detail: error })
+            sendMessageToExtension("errorEthAddress", { detail: error })
         })
 
 }
@@ -140,13 +140,13 @@ function onEthSignTransaction(ethPath, txParams) {
                 result: result
             }
 
-            sendMessageBackToClient("sendEthSignTx", { detail: data })
+            sendMessageToExtension("sendEthSignTx", { detail: data })
         })
         .catch(error => {
 
             console.log(error)
             displayResult(error)
-            sendMessageBackToClient("errorEthSignTx", { detail: error })
+            sendMessageToExtension("errorEthSignTx", { detail: error })
         })
 }
 
@@ -158,13 +158,13 @@ function onEthAppConfiguration() {
             
             console.log(result)
             displayResult(result)
-            sendMessageBackToClient("sendEthAppConfig", { detail: result })
+            sendMessageToExtension("sendEthAppConfig", { detail: result })
         })
         .catch(error => {
 
             console.log(error)
             displayResult(error)
-            sendMessageBackToClient("errorEthAppConfig", { detail: error })
+            sendMessageToExtension("errorEthAppConfig", { detail: error })
         })
 }
 
@@ -175,7 +175,7 @@ function displayResult(result) {
 }
 
 
-function sendMessageBackToClient(action, message) {
+function sendMessageToExtension(action, message) {
 
     var eventData = new CustomEvent(action, message)
     document.dispatchEvent(eventData)
