@@ -237,14 +237,3 @@ function processQueryRequest() {
 
 
 processQueryRequest()
-
-
-chrome.runtime.onMessage.addListener( 
-
-    function (request, sender, sendResponse) {
-
-        if (request.action === "requestBtcAddress") {
-            console.log("in listener action requestBtcAddress")
-        }
-    }
-)
